@@ -99,7 +99,7 @@ public class DAO {
 		return status;
 	}
 	
-	public Usuario[] getUsuarios() {
+	public void getUsuarios() {
 		Usuario[] usuarios = null;
 		
 		try {
@@ -113,6 +113,7 @@ public class DAO {
 				for(int i = 0; rs.next(); i++) {
 					usuarios[i] = new Usuario(rs.getInt("codigo"), rs.getString("login"),
 							rs.getString("senha"), rs.getString("sexo").charAt(0));
+					System.out.println(usuarios[i]);
 				}
 			}
 			st.close();
@@ -120,7 +121,6 @@ public class DAO {
 			System.err.println(e.getMessage());
 		}
 		
-		return usuarios;
 	}
 	
 	public Usuario[] getUsuariosMasculinos() {
@@ -145,5 +145,24 @@ public class DAO {
 		}
 		
 		return usuarios;
+	}
+	
+	public Usuario getUsuarioId(int id) {
+		Usuario usuario = null;
+		
+		try {
+			Statement st = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+			ResultSet rs = st.executeQuery("SELECT * FROM usuario WHERE usuario.codigo= '" + id + "'");
+			if(rs.next()) {
+				usuario = new Usuario(rs.getInt("codigo"),rs.getString("login"), rs.getString("senha"), rs.getString("sexo").charAt(0));
+			} else {
+				System.out.println("Usuario não encontrado");
+			}
+			st.close();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+		
+		return usuario;
 	}
 }
